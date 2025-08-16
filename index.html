@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #495057;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #495057;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .status-done {
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .notes-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 4px;
+            font-size: 14px;
+        }
+        .notes-input:focus {
+            outline: 1px solid #667eea;
+            background: white;
+            border-radius: 4px;
+        }
+        .priority {
+            width: 60px;
+            text-align: center;
+        }
+        .priority select {
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .high { color: #dc3545; }
+        .medium { color: #fd7e14; }
+        .low { color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Task Progress Tracker</h1>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="totalTasks">32</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="completedTasks">11</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="pendingTasks">21</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="progressPercent">34%</div>
+                <div class="stat-label">Progress</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="taskTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name/Handle</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>PhilC420</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="magmaR"></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>@SWATGoblin</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Jigglypuff"></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>@JiraiyatheNoble</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="ninetails & Rapidash"></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>John B#7095</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Blastoise"></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>CardB00rd | IMSO | DAPS#0299</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="aerodactyl"></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Slink#9707</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="geode"></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>@credlessk</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="hoodie/skeletal/full fire 1 - gets 9 all together"></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>AMA RACOON#2446</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Haunter"></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>Gotto#3008</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="charmander & ZAPDOS"></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>@MusubiNFT</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="snorlax"></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>lunkebabs#7249</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="psyduck & squirtle"></td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>Toony#9026</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="jigglypuff"></td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>@bbymae (TWITTER)</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Eevee"></td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>Dotkoms</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Ground shits"></td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>maz7</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Charmander"></td>
+                    </tr>
+                    <tr>
+                        <td>16</td>
+                        <td>@szera</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="gengar"></td>
+                    </tr>
+                    <tr>
+                        <td>17</td>
+                        <td>Origami_hands</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Scyther"></td>
+                    </tr>
+                    <tr>
+                        <td>18</td>
+                        <td>Naclz#8950</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="Bulbasaur/ivysaur/venusaur + dragonite"></td>
+                    </tr>
+                    <tr>
+                        <td>19</td>
+                        <td>Born2rule#6799</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="127"></td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>laios.</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="mew"></td>
+                    </tr>
+                    <tr>
+                        <td>21</td>
+                        <td>@ArabiNFT_</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="pikachu"></td>
+                    </tr>
+                    <tr>
+                        <td>22</td>
+                        <td>Bitch im bamboe aka bamboeplant#0420</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="panda 2x"></td>
+                    </tr>
+                    <tr>
+                        <td>23</td>
+                        <td>tkzimms.eth#2472</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="alakazam"></td>
+                    </tr>
+                    <tr>
+                        <td>24</td>
+                        <td>bamboeplant#0420</td>
+                        <td><span class="status-pending" onclick="toggleStatus(this)">PENDING</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="The panda one"></td>
+                    </tr>
+                    <tr>
+                        <td>25</td>
+                        <td>Salts</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="dragonite & Meowth"></td>
+                    </tr>
+                    <tr>
+                        <td>26</td>
+                        <td>nom</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></td>
+                        <td><input type="text" class="notes-input" placeholder="Add notes..." value="bulbasaur"></td>
+                    </tr>
+                    <tr>
+                        <td>27</td>
+                        <td>seb</td>
+                        <td><span class="status-done" onclick="toggleStatus(this)">DONE</span></td>
+                        <td class="priority"><select onchange="updatePriority(this)"><option value="medium">Medium</option><option value="high
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function toggleStatus(element) {
+            if (element.classList.contains('status-pending')) {
+                element.textContent = 'DONE';
+                element.className = 'status-done';
+            } else {
+                element.textContent = 'PENDING';
+                element.className = 'status-pending';
+            }
+            updateStats();
+        }
+
+        function updatePriority(element) {
+            const value = element.value;
+            element.className = value;
+        }
+
+        function updateStats() {
+            const total = document.querySelectorAll('.status-pending, .status-done').length;
+            const completed = document.querySelectorAll('.status-done').length;
+            const pending = document.querySelectorAll('.status-pending').length;
+            const progress = Math.round((completed / total) * 100);
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('progressPercent').textContent = progress + '%';
+        }
+
+        // Initialize priority dropdowns
+        document.querySelectorAll('.priority select').forEach(select => {
+            select.className = 'medium';
+        });
+
+        // Initialize stats on page load
+        updateStats();
+    </script>
+</body>
+</html>
+
+Could not connect to the reCAPTCHA service. Please check your internet connection and reload to get a reCAPTCHA challenge.
